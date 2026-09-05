@@ -4,12 +4,49 @@ namespace App\Services;
 
 use App\Models\Employee;
 use App\Models\LeaveBalance;
+use App\Models\LeaveRequest;
 use App\Models\LeaveType;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
+    public function get_index()
+    {
+        $leabeType =Leavetype::all();
+        $leave_request=LeaveRequest::with('employee','leaveType')->paginate(20);
+        return ['leavetype'=>$leabeType,'leaveRequest'=>$leave_request];
+    }
+    public function leave_store($data)
+    {
+        $emp_id = auth()->user()->employee->id;
+        $leave_balance = LeaveBalance::where('employee_id', $emp_id)->where('leavetype_id', $data['leavetype_id'])->where('year',now()->year)->first();
+
+        $start = Carbon::parse($data['start_date']);
+        $end = Carbon::parse($data['end_date']);
+        $total = $start->diffInDays($end) +1;
+
+        if (!$leave_balance) {
+            throw new Exception('That type of Leave can\'n get');
+        }
+
+        if($total > $leave_balance->remaining_days)
+            {
+                throw new Exception('Leave Balance not enought');
+            }
+        
+        LeaveRequest::create([
+            'employee_id' => $emp_id,
+            'leavetype_id' => $data['leavetype_id'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'total_days' => $total,
+            'reason' => $data['reason']
+        ]);
+    }
+
+
     public function sync($employeeId, $new_status): void
     {
         $employee = Employee::find($employeeId);
@@ -87,7 +124,7 @@ class LeaveService
             ],
 
             '12_month' => [
-                'ANNUAL' =>10,
+                'ANNUAL' => 10,
                 'SICK'   => 30,
                 'CASUAL' => 6,
             ],

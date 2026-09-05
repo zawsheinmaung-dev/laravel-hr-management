@@ -91,6 +91,11 @@ class Employee extends Model
         return $this->hasMany(Overtime::class);
     }
 
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class);
+    }
+
     public function update_user_name()
     {
         $this->user()->update([

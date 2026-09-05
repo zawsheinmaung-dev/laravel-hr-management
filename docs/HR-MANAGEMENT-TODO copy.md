@@ -74,7 +74,7 @@
 
 ## Permissions
 
-* [ ] Permission CRUD
+* [x] Permission CRUD
 * [x] Assign permissions to roles
 * [x] Display user permissions
 
@@ -93,19 +93,19 @@
 
 # 5. Department Management
 
-* [ ] Department CRUD
-* [ ] Assign manager
-* [ ] Department employee list
+* [x] Department CRUD
+* [x] Assign manager
+* [x] Department employee list
 
 ---
 
 # 6. Attendance System
 
-* [ ] Clock in
-* [ ] Clock out
-* [ ] Attendance history
-* [ ] Late calculation
-* [ ] Leave integration
+* [x] Clock in
+* [x] Clock out
+* [x] Attendance history
+* [x] Late calculation
+* [x] Leave integration
 
 ---
 

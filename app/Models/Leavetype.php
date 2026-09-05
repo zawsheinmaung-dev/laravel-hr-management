@@ -9,4 +9,14 @@ class Leavetype extends Model
 {
     /** @use HasFactory<\Database\Factories\LeavetypeFactory> */
     use HasFactory;
+
+    public function leaveBalance()
+    {
+        return $this->hasMany(leaveBalance::class);
+    }
+
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class);
+    }
 }
