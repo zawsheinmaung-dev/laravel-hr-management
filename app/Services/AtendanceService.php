@@ -18,6 +18,11 @@ class AtendanceService
         return Attendance::with('employee')->get();
     }
 
+    public function show($id)
+    {
+        return Attendance::with('employee.currentShift.shift')->findOrFail($id);
+    }
+
     public function check_in($date)
     {
         $emp_id = auth()->user()->employee->id;
@@ -25,6 +30,11 @@ class AtendanceService
         $attendace = $this->getAttendace($emp_id);
         $now = now();
         $late = 0;
+
+
+        if ($attendace?->status === 'leave') {
+            throw new Exception('Having leave can\'t check_in');
+        }
 
         if ($attendace?->check_in) {
             throw new Exception('Already Check In');
@@ -50,7 +60,8 @@ class AtendanceService
             AttendanceLog::create([
                 'employee_id' => $emp_id,
                 'log_time' => now(),
-                'ip_address' => $date
+                'ip_address' => $date,
+                'log_type' => 'check_in'
             ]);
         });
     }
@@ -61,12 +72,25 @@ class AtendanceService
         $assign = $this->getAssign($emp_id);
         $attendace = $this->getAttendace($emp_id);
 
+        if (!$attendace) {
+            throw new Exception('Please check in first.');
+        }
+
+        if (!$attendace->check_in) {
+            throw new Exception('Please check in first.');
+        }
+        if ($attendace->check_out) {
+            throw new Exception('Already Check Out.');
+        }
+
         $start_time = Carbon::parse($assign->shift->start_time);
         $end_time = Carbon::parse($assign->shift->end_time);
         $now = Carbon::parse(now()->format('H:i:s'));
         $check_in = Carbon::parse($attendace->check_in);
-        $working = number_format($check_in->diffInHours($now), 2);
+        $working_minutes = $check_in->diffInMinutes($now);
+        $working = round($working_minutes / 60, 2);
         $early_out = $now->lt($end_time) ? max(0, $now->diffInMinutes($end_time)) : 0;
+
         return DB::transaction(function () use ($emp_id, $working, $early_out, $attendace) {
             $attendace->update([
                 'check_out' => now()->format('H:i:s'),

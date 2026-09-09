@@ -60,7 +60,6 @@ function search_manager()
             return;
         }
     
-    
     clear_interval = setTimeout(()=>{
         axios.get(route('search.manager'),{
         params:{search:manager_name.value}

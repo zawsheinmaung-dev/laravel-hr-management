@@ -20,7 +20,7 @@ class LeaveController extends Controller
     public function index()
     {
         $leave =$this->leave_service->get_index();
-        return Inertia::render('Leave/Index',['leavetypes'=>$leave['leavetype'],'leaverequests'=>$leave['leaveRequest']]);
+        return Inertia::render('Leave/Index',['leavetypes'=>$leave['leavetype'],'leaverequests'=>$leave['leaveRequest'],'status'=>$leave['status']]);
     }
 
     /**
@@ -28,7 +28,7 @@ class LeaveController extends Controller
      */
     public function create()
     {
-        //
+       
     }
 
     /**
@@ -49,7 +49,9 @@ class LeaveController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
+        $leave =$this->leave_service->leave_show($id);
+        return Inertia::render('Leave/View',['leave'=>$leave['leave'],'history'=>$leave['history'],'balance'=>$leave['balance']]);
     }
 
     /**
@@ -65,7 +67,12 @@ class LeaveController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $this->leave_service->leave_update($id,$request->status);
+            return redirect()->back()->with('leave','Success');
+        } catch (\Exception $th) {
+            return back()->withErrors(['leave'=>$th->getMessage()]);
+        }
     }
 
     /**

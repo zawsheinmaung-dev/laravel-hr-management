@@ -47,6 +47,10 @@ class OvertimeService
             throw new Exception('Something wrong please connect to IT_Admin');
         }
         DB::transaction(function () use ($ot, $status) {
+            if($ot->status !=='pending')
+                {
+                    throw new Exception('Only pending leave requests can be approved.');
+                }
             $ot->update([
                 'approved_by' => auth()->id(),
                 'status' => $status

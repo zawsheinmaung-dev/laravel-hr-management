@@ -30,12 +30,12 @@ class ShiftService
             {
                 throw new Exception('Employee has already assign this day');
             }
-        $active_now =ShiftAssignments::where('employee_id',$data['employee_id'])
-                        ->where('effective_date','<=',now()->toString())->orderByDesc('effective_date')->first();
-        if($active_now)
-            {
-                throw new Exception('Employee on shift '.$active_now->shift_id. 'Effecitve date'.$active_now->efective_date);
-            }
+        // $active_now =ShiftAssignments::where('employee_id',$data['employee_id'])
+        //                 ->where('effective_date','<=',now()->toString())->orderByDesc('effective_date')->first();
+        // if($active_now)
+        //     {
+        //         throw new Exception('Employee on shift '.$active_now->shift_id. 'Effecitve date'.$active_now->effective_date);
+        //     }
         return ShiftAssignments::create($data);
     }
 

@@ -351,7 +351,7 @@
 
 --- -->
 
-# Leave
+<!-- # Leave
 
 ### leave_types
 
@@ -390,11 +390,11 @@
 - remaining_days
 - timestamps
 
----
+--- -->
 
 # Payroll
 
-### salary_structures
+<!-- ### salary_structures
 
 - id
 - name
@@ -412,7 +412,7 @@
 - calculation_type
 - amount
 - percentage
-- timestamps
+- timestamps -->
 
 ---
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RoleAndPermissionController;
+use App\Http\Controllers\SalaryStructureController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -48,8 +49,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance',[AttendanceController::class,'index'])->name('attendance.index');
     Route::post('/attendance/checkIn',[AttendanceController::class,'check_in'])->name('attendance.checkIn');
     Route::post('/attendance/checkOut',[AttendanceController::class,'check_out'])->name('attendance.checkOut');
+    Route::get('/attendance/show/{id}',[AttendanceController::class,'show'])->name('attendance.show');
     
     Route::resource('/overtime',OvertimeController::class);
     Route::resource('/leave',LeaveController::class);
 
+    Route::resource('/payroll',SalaryStructureController::class);
 });

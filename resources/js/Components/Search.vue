@@ -37,6 +37,8 @@ function manager_search() {
             .then((res) => {
                 manager.value = res.data.employees;
                 show_manager.value = true;
+                console.log(res.data);
+                
             });
     }, 1000);
 }

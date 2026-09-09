@@ -96,8 +96,8 @@ defineProps({
                         </label>
 
                         <p class="mt-1 font-medium text-gray-800">
-                            {{ branch.manager.first_name }}
-                            {{ branch.manager.last_name }}
+                            {{ branch.manager?.first_name }}
+                            {{ branch.manager?.last_name }}
                         </p>
                     </div>
 
@@ -125,7 +125,7 @@ defineProps({
                         </label>
 
                         <p class="mt-1 font-medium text-gray-800">
-                            {{ branch.phone }}
+                            {{ branch?.phone }}
                         </p>
                     </div>
 
@@ -136,7 +136,7 @@ defineProps({
                         </label>
 
                         <p class="mt-1 font-medium text-gray-800">
-                            {{ branch.manager.personal_email }}
+                            {{ branch.manager?.personal_email }}
                         </p>
                     </div>
                     <div>
@@ -145,7 +145,7 @@ defineProps({
                         </label>
 
                         <p class="mt-1 font-medium text-gray-800">
-                            {{ branch.address }}
+                            {{ branch?.address }}
                         </p>
                     </div>
                 </div>

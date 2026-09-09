@@ -2,6 +2,8 @@
 import { route } from "ziggy-js";
 import Layout from "../../Layouts/Layout.vue";
 import { Link, useForm } from "@inertiajs/vue3";
+import Search from "../../Components/Search.vue";
+import { ref } from "vue";
 
 defineOptions({
     name: "LeaveIndex",
@@ -13,8 +15,8 @@ const props = defineProps({
     auth: Object,
     leavetypes: Object,
     leaverequests: Object,
+    status: Array,
 });
-// const total_day =form.start_date -form.end_date;
 
 const form = useForm({
     start_date: "",
@@ -24,16 +26,15 @@ const form = useForm({
     reason: "",
 });
 
+const updat_form = useForm({
+    status: "",
+});
 function request_leave() {
-    console.log(form.data());
-
     form.post(route("leave.store"));
 }
 
 function get_total_days() {
     if (!form.start_date || !form.end_date) {
-        console.log("return");
-
         return;
     }
     const start = new Date(form.start_date);
@@ -44,6 +45,32 @@ function get_total_days() {
     }
     form.total_days = diff + 1;
 }
+
+function update_status(id, status) {
+    updat_form.status = status;
+
+    updat_form.put(route("leave.update", id), {
+        preserveScroll: true,
+
+        onSuccess: () => {
+            console.log("success");
+        },
+
+        onError: (errors) => {
+            console.log(errors);
+        },
+    });
+}
+
+const employee_id = ref();
+function filter_emloyee() {
+    const emp = employee_id.value
+        ? props.leaverequests.data.filter(
+              (lq) => lq.employee_id == employee_id.value,
+          )
+        : props.leaverequests.data;
+    return emp;
+}
 </script>
 
 <template>
@@ -53,6 +80,18 @@ function get_total_days() {
     >
         <div
             v-for="(er, key) in form?.errors"
+            :key="key"
+            class="text-sm text-red-600"
+        >
+            {{ er }}
+        </div>
+    </div>
+    <div
+        v-if="Object.keys(updat_form?.errors).length"
+        class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4"
+    >
+        <div
+            v-for="(er, key) in updat_form?.errors"
             :key="key"
             class="text-sm text-red-600"
         >
@@ -171,6 +210,15 @@ function get_total_days() {
     <div
         class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
     >
+        <div class="flex justify-end p-5">
+            <div class="w-full max-w-sm">
+                <Search
+                    v-model="employee_id"
+                    label="Search"
+                    placeholder="Search Employee..."
+                />
+            </div>
+        </div>
         <table class="w-full text-left text-sm">
             <thead class="bg-gray-50">
                 <tr class="border-b border-gray-200">
@@ -183,10 +231,9 @@ function get_total_days() {
                     <th class="px-5 py-3">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody v-if="filter_emloyee()?.length">
                 <tr
-                    v-if="leaverequests?.data.length"
-                    v-for="lq in leaverequests?.data"
+                    v-for="lq in filter_emloyee()"
                     class="border-b border-gray-100 hover:bg-gray-50"
                 >
                     <td class="px-5 py-3">
@@ -210,32 +257,37 @@ function get_total_days() {
                         </span>
                     </td>
                     <td class="px-5 py-3">
-                        <div class="flex gap-1">
-                            <div class="flex gap-1">
-                                <button
-                                    class="px-2 py-1 rounded-lg bg-green-100 hover:bg-green-200"
-                                >
-                                    Approve
-                                </button>
-                                <button
-                                    class="px-2 py-1 rounded-lg bg-red-100 hover:bg-red-200"
-                                >
-                                    Reject
-                                </button>
-                            </div>
-                            <Link
-                                class="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200"
-                                >View</Link
+                        <div class="flex items-center gap-2">
+                            <select
+                                v-model="lq.status"
+                                :disabled="lq.status !== 'pending'"
+                                @change="update_status(lq.id, lq.status)"
+                                class="px-2 py-1 rounded-lg border border-gray-300"
                             >
+                                <option
+                                    v-for="item in status"
+                                    :key="item"
+                                    :value="item"
+                                >
+                                    {{ item }}
+                                </option>
+                            </select>
+
+                            <Link
+                            :href="route('leave.show',lq.id)"
+                                class="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200"
+                            >
+                                View
+                            </Link>
                         </div>
                     </td>
                 </tr>
-                <tr v-else>
-                    <td colspan="7" class="text-center py-10 text-gray-500">
-                        No overtime requests found.
-                    </td>
-                </tr>
             </tbody>
+            <tr v-else>
+                <td colspan="7" class="text-center py-10 text-gray-500">
+                    No overtime requests found.
+                </td>
+            </tr>
         </table>
     </div>
 </template>

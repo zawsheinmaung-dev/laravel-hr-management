@@ -14,7 +14,6 @@ class EmployeeService
 {
     public function __construct(protected LeaveService $leave_balance)
     {
-       
     }
 
     public function search($search)

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->time('late_minutes')->default(0);
             $table->time('early_leave_minutes')->default(0);;
             $table->unsignedInteger('overtime_minutes')->default(0);;
-            $table->enum('status',['present','absent','late'])->default('present');
+            $table->enum('status',['present','absent','late','leave'])->default('present');
             $table->ipAddress('check_in_ip')->nullable();
             $table->ipAddress('check_out_ip')->nullable();
             $table->timestamps();

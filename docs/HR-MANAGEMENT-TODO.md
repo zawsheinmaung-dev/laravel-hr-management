@@ -74,7 +74,6 @@
 
 ## Permissions
 
-* [ ] Permission CRUD
 * [x] Assign permissions to roles
 * [x] Display user permissions
 
@@ -117,10 +116,9 @@
 
 # 7. Leave Management
 
-* [ ] Leave type CRUD
-* [ ] Leave request form
-* [ ] Approve/reject leave
-* [ ] Leave balance calculation
+* [x] Leave request form
+* [x] Approve/reject leave
+* [x] Leave balance calculation
 
 ---
 

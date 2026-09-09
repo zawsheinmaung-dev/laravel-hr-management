@@ -15,6 +15,9 @@ class LeaveRequest extends Model
         'start_date',
         'end_date',
         'total_days',
+        'status',
+        'approved_at',
+        'approved_by',
         'reason'
     ];
 
@@ -26,5 +29,10 @@ class LeaveRequest extends Model
     public function leaveType()
     {
         return $this->belongsTo(Leavetype::class,'leavetype_id');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(Employee::class,'approved_by');
     }
 }

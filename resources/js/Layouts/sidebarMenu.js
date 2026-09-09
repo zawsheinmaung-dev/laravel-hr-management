@@ -49,11 +49,11 @@ export const menuGroups =[
         title:'FINANCE',
         collapsible:true,
         items:[
-            // {
-            //     name: 'Payroll', 
-            //     icon: '💰', 
-            //     route: 'payroll.index' 
-            // },
+            {
+                name: 'Payroll', 
+                icon: '💰', 
+                route: 'payroll.index' 
+            },
             // {
             //     name: 'Reports', 
             //     icon: '📈', 

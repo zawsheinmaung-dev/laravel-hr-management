@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('attendance_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
-            $table->enum('log_type',['check_in','check_out','overtime_request'])->default('check_in');
+            $table->enum('log_type',['check_in','check_out','overtime_request','leave_request','leave_request'])->default('check_in');
             $table->string('device')->nullable();
             $table->ipAddress('ip_address')->nullable();
             $table->string('gps_location')->nullable();

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import Layout from "../../Layouts/Layout.vue";
-import { router, useForm, usePage } from "@inertiajs/vue3";
+import { Link, router, useForm, usePage } from "@inertiajs/vue3";
 import axios from "axios";
 import { route } from "ziggy-js";
 
@@ -15,7 +15,7 @@ const props = defineProps({
     attendances: Array,
 });
 const today = new Date().toLocaleDateString("en-CA");
-const date_check = ref();
+const date_check = ref(today);
 
 const current_time = ref(
     new Date().toLocaleTimeString("en-CA", {
@@ -199,22 +199,24 @@ function search_attendace() {
                                 {{ att.employee?.employee_code }}
                             </div>
                         </td>
-                        <td class="px-5 py-3">{{ att.attendance_date }}</td>
-                        <td class="px-5 py-3">{{ att.check_in }}</td>
-                        <td class="px-5 py-3">{{ att.check_out }}</td>
-                        <td class="px-5 py-3">{{ att.working_hours }}</td>
+                        <td class="px-5 py-3">{{ att.attendance_date ?? "-" }}</td>
+                        <td class="px-5 py-3">{{ att.check_in ?? "-"}}</td>
+                        <td class="px-5 py-3">{{ att.check_out ?? "-"}}</td>
+                        <td class="px-5 py-3">{{ att.working_hours ?? "-"}}</td>
                         <td class="px-5 py-3">
                             <span
-                                class="rounded-full px-2 py-1 text-xs"
-                                :class="
-                                    att.status === 'late'
-                                        ? 'bg-yellow-100 text-yellow-700'
-                                        : 'bg-green-100 text-green-700'
-                                "
+                                
+                                v-if="att.status ==='present'"
+                                class="rounded-full px-2 py-1 text-xs bg-green-100 text-green-700"
                                 >{{ att.status }}</span
                             >
+                            <span v-else class="rounded-full px-2 py-1 text-xs bg-red-100 text-red-700">{{ att.status }}</span>
+                        </td>
+                        <td class="px-5 py-3">
+                            <Link :href="route('attendance.show',att.id)" class="rounded-lg bg-gray-100 px-2 py-1 hover:bg-gray-200">View Details</Link>
                         </td>
                     </tr>
+                    
                 </tbody>
                 <tbody v-else>
                     <tr>

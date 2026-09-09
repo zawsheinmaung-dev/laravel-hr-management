@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { menuGroups, roleMenuAccess } from '../Layouts/sidebarMenu.js';
@@ -8,7 +8,7 @@ import { menuGroups, roleMenuAccess } from '../Layouts/sidebarMenu.js';
 const openGroups=ref({});
 
 const page = usePage();
-
+const currentRoute = computed(() => route().current());
 function toggle(groupTitle)
 {
   openGroups.value[groupTitle]=!openGroups.value[groupTitle];
@@ -39,7 +39,7 @@ function toggle(groupTitle)
           :key="item.name"
           :href="route(item.route)"
           class="flex items-center px-4 py-2 text-sm hover:bg-gray-700"
-          :class="{ 'bg-gray-700': route().current(item.route) }"
+          :class="{ 'bg-gray-700': currentRoute === item.route }"
         >
           <span class="mr-3">{{ item.icon }}</span>
           {{ item.name }}
