@@ -47,7 +47,27 @@ function user_delete(id){
 
 <template>
     <div class="space-y-4">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    Salary Components
+                </h1>
 
+                <p class="text-sm text-gray-500 mt-1">
+                    Manage salary earnings and deductions
+                </p>
+            </div>
+
+            <Link
+            :href="route('payroll.create')"
+                class="inline-flex items-center px-4 py-2
+                       bg-gray-800 text-white text-sm font-medium
+                       rounded-lg hover:bg-gray-700 transition"
+            >
+                + Add Component
+            </Link>
+        </div>
         <!-- Header -->
         <div class="flex items-center justify-between">
 

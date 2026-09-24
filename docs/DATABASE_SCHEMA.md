@@ -416,7 +416,17 @@
 
 ---
 
-### allowances
+<!-- ### allowances
+
+- id
+- name
+- calculation_type
+- amount
+- timestamps -->
+
+---
+
+<!-- ### deductions
 
 - id
 - name
@@ -424,30 +434,10 @@
 - amount
 - timestamps
 
----
+--- -->
 
-### deductions
 
-- id
-- name
-- calculation_type
-- amount
-- timestamps
-
----
-
-### employee_loans
-
-- id
-- employee_id
-- loan_amount
-- monthly_deduction
-- remaining_balance
-- status
-- timestamps
-
----
-
+<!-- 
 ### tax_brackets
 
 - id
@@ -457,9 +447,9 @@
 - effective_year
 - timestamps
 
----
+--- -->
 
-### payroll_batches
+<!-- ### payroll_batches
 
 - id
 - month
@@ -468,9 +458,9 @@
 - status
 - timestamps
 
----
+--- -->
 
-### payrolls
+<!-- ### payrolls
 
 - id
 - payroll_batch_id
@@ -487,8 +477,8 @@
 - generated_at
 - timestamps
 
----
-
+--- -->
+<!-- 
 ### payroll_items
 
 - id
@@ -498,7 +488,7 @@
 - amount
 - timestamps
 
----
+--- -->
 
 # Recruitment
 

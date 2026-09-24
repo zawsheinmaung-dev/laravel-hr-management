@@ -50,9 +50,24 @@ export const menuGroups =[
         collapsible:true,
         items:[
             {
-                name: 'Payroll', 
+                name: 'Pay Roll', 
                 icon: '💰', 
                 route: 'payroll.index' 
+            },
+            {
+                name: 'Salary Component', 
+                icon: '💰', 
+                route: 'salarycomponent.index' 
+            },
+            {
+                name: 'Salary Structure', 
+                icon: '💰', 
+                route: 'salarystructure.index' 
+            },
+            {
+                name: 'Tax Bracket', 
+                icon: '💰', 
+                route: 'taxbreacket.index' 
             },
             // {
             //     name: 'Reports', 

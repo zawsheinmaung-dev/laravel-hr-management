@@ -8,10 +8,13 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\PayRollController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RoleAndPermissionController;
+use App\Http\Controllers\SalaryComponentController;
 use App\Http\Controllers\SalaryStructureController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\TaxBracketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,5 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/overtime',OvertimeController::class);
     Route::resource('/leave',LeaveController::class);
 
-    Route::resource('/payroll',SalaryStructureController::class);
+    Route::post('/payroll/generate',[PayRollController::class,'generate'])->name('generate');
+    Route::resource('/payroll',PayRollController::class);
+    Route::resource('/salarycomponent',SalaryComponentController::class);
+    Route::resource('/salarystructure',SalaryStructureController::class);
+    Route::resource('/taxbreacket',TaxBracketController::class);
 });

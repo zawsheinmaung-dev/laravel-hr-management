@@ -96,6 +96,11 @@ class Employee extends Model
         return $this->hasMany(LeaveRequest::class);
     }
 
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
+    }
+
     public function update_user_name()
     {
         $this->user()->update([

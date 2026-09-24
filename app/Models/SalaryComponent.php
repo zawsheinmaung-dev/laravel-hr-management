@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalaryComponent extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -16,5 +16,18 @@ class SalaryComponent extends Model
         'description'
     ];
 
-    
+    public function salaryComponentItems()
+    {
+        return $this->hasMany(SalaryStructureItem::class);
+    }
+
+    public function salaryStructures()
+    {
+        return $this->belongsToMany(
+            SalaryStructure::class,
+            'salary_structure_items',
+            'salary_component_id',
+            'salary_structure_id'
+        )->distinct();
+    }
 }

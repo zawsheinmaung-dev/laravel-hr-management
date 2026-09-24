@@ -22,6 +22,7 @@ function delete_salary_component(id)
 </script>
 
 <template>
+   
     <div class="space-y-6">
 
         <!-- Header -->
@@ -146,7 +147,7 @@ function delete_salary_component(id)
                             >
 
                                 <Link
-                                    :href="route('payroll.edit',sl.id)"
+                                    :href="route('salarycomponent.edit',sl.id)"
                                     class="px-2 py-1
                                            rounded-lg
                                            bg-blue-100
