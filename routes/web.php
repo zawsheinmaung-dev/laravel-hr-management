@@ -6,6 +6,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayRollController;
@@ -22,13 +23,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login_check'])->name('login_check');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
     Route::resource('users', UserController::class);
-    Route::resource('dashboard',DashboardController::class);
+    Route::resource('dashboard', DashboardController::class);
     Route::get('role', [RoleAndPermissionController::class, 'get_role'])->name('get_role');
     Route::post('role/update', [RoleAndPermissionController::class, 'update_role'])->name('update_role');
     Route::post('role/create', [RoleAndPermissionController::class, 'create_role'])->name('create_role');
@@ -49,17 +51,22 @@ Route::middleware('auth')->group(function () {
     Route::post("/shifts-delete/{id}", [ShiftController::class, "shift_assign_delete"])->name('shift.delete');
     Route::resource('shifts', ShiftController::class);
 
-    Route::get('/attendance',[AttendanceController::class,'index'])->name('attendance.index');
-    Route::post('/attendance/checkIn',[AttendanceController::class,'check_in'])->name('attendance.checkIn');
-    Route::post('/attendance/checkOut',[AttendanceController::class,'check_out'])->name('attendance.checkOut');
-    Route::get('/attendance/show/{id}',[AttendanceController::class,'show'])->name('attendance.show');
-    
-    Route::resource('/overtime',OvertimeController::class);
-    Route::resource('/leave',LeaveController::class);
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::post('/attendance/checkIn', [AttendanceController::class, 'check_in'])->name('attendance.checkIn');
+    Route::post('/attendance/checkOut', [AttendanceController::class, 'check_out'])->name('attendance.checkOut');
+    Route::get('/attendance/show/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
 
-    Route::post('/payroll/generate',[PayRollController::class,'generate'])->name('generate');
-    Route::resource('/payroll',PayRollController::class);
-    Route::resource('/salarycomponent',SalaryComponentController::class);
-    Route::resource('/salarystructure',SalaryStructureController::class);
-    Route::resource('/taxbreacket',TaxBracketController::class);
+    Route::resource('/overtime', OvertimeController::class);
+    Route::resource('/leave', LeaveController::class);
+
+    Route::post('/payroll/generate', [PayRollController::class, 'generate'])->name('generate');
+    Route::post('/payroll/{id}/approve', [PayRollController::class, 'approved'])->name('payroll.approve');
+    Route::post('/payroll/{id}/isPaid', [PayRollController::class, 'isPaid'])->name('payroll.paid');
+    Route::get('/payroll/{id}/employee', [PayRollController::class, 'employeeView'])->name('payroll.employee');
+    Route::resource('/payroll', PayRollController::class);
+    Route::get('/payroll/{id}/payslip', [PayRollController::class, 'payslip'])->name('payroll.payslip');
+    Route::resource('/salarycomponent', SalaryComponentController::class);
+    Route::resource('/salarystructure', SalaryStructureController::class);
+    Route::resource('/taxbreacket', TaxBracketController::class);
+    Route::resource('/holidays', HolidayController::class);
 });

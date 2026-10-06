@@ -24,6 +24,11 @@ export const menuGroups =[
                 route: 'attendance.index'
             },
             {
+                name: 'Holiday', 
+                icon: '🏖️', 
+                route: 'holidays.index'
+            },
+            {
                 name: 'Overtime',
                 icon: '⏱️',
                 route: 'overtime.index'

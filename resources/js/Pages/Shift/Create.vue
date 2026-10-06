@@ -8,24 +8,26 @@ defineOptions({
     layout: Layout,
 });
 
+defineProps({
+    workingdays: Array,
+});
 const form = useForm({
     name: "",
     start_time: "",
     end_time: "",
     grace_minutes: "",
     break_minutes: "",
+    working_days:[]
 });
 
 function shift_create() {
     console.log(form.data());
-    form.post(route('shifts.store'),{
-        onSuccess:(success)=>{
-            form.reset()
-        }
-    })
+    form.post(route("shifts.store"), {
+        onSuccess: (success) => {
+            form.reset();
+        },
+    });
 }
-
-
 </script>
 
 <template>
@@ -163,19 +165,13 @@ function shift_create() {
                 </div>
             </div>
 
-            <!-- Break Time Details -->
+            <!-- Break Time /Working days -->
             <div class="border-t border-gray-200 p-6">
-                <div class="mb-5">
-                    <h2 class="text-lg font-semibold text-gray-800">
-                        Break Time
-                    </h2>
-
-                    <p class="mt-1 text-sm text-gray-500">Break Time Details</p>
-                </div>
+                
 
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <!-- Break Time -->
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-1">
                         <label
                             class="mb-1.5 block text-sm font-medium text-gray-700"
                         >
@@ -197,6 +193,34 @@ function shift_create() {
                                 :value="m"
                             />
                         </datalist>
+                    </div>
+
+                    <!-- Working Days -->
+                    <div class="md:col-span-1">
+                        <label
+                            class="mb-2 block text-sm font-medium text-gray-700"
+                        >
+                            Working Days
+                        </label>
+
+                        <div class="flex flex-wrap gap-3">
+                            <label
+                                v-for="(workingday,index) in workingdays"
+                                :key="index"
+                                class="flex cursor-pointer items-center gap-2"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :value="workingday"
+                                    v-model="form.working_days"
+                                    class="rounded border-gray-300"
+                                />
+
+                                <span class="text-sm text-gray-700">
+                                    {{ workingday }}
+                                </span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>

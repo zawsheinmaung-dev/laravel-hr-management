@@ -3,93 +3,126 @@
 namespace App\Services;
 
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Payroll;
 use App\Models\PayrollBatch;
-use App\Models\PayrollItem;
+use App\Models\Shifts;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
+
 class PayrollService
 {
+    public function __construct(protected PayrollCalculationService $payroll_calculation) {}
+
     public function get_index()
     {
-        return PayrollBatch::where('month', now()->month)
-            ->where('year', now()->year)
+        return PayrollBatch::where('year', now()->year)
             ->withCount('payrolls')
             ->withSum('payrolls', 'net_salary')
             ->get();
     }
 
-    public function get_show($id) 
+    public function get_show($id)
     {
-        return PayrollBatch::with('payrolls.employee.department','payrolls.employee.department')->find($id);
+        return PayrollBatch::with('payrolls.employee.department')->withCount('payrolls')
+            ->withSum('payrolls', 'net_salary')->find($id);
     }
 
-    public static function generate($month, $year)
+    public function generate($month, $year)
     {
+
         if ($month != now()->month || $year != now()->year) {
             throw new Exception('Payroll can only be generated for this month.');
         }
-        $employee = Employee::with(
-            'salaryStructure.salaryStructureItems.salaryComponent',
-            'attendances'
-        )->get();
-        $payroll_batch = PayrollBatch::create([
-            'month' => $month,
-            'year' => $year,
-            'generated_by' => auth()->id(),
-            'status' => 'generated'
-        ]);
-        foreach ($employee as $emp) {
-            $basic_salary = $emp->salaryStructure->salaryStructureItems
-                ->first(function ($item) {
-                    return $item->salaryComponent->name == 'Basic Salary';
-                })->amount ?? 0;
-            $housing_allowance = $emp->salaryStructure->salaryStructureItems
-                ->first(function ($item) {
-                    return $item->salaryComponent->name == 'Housing Allowance';
-                })->amount ?? 0;
-            $transport_allowance = $emp->salaryStructure->salaryStructureItems
-                ->first(function ($item) {
-                    return $item->salaryComponent->name == 'Transport Allowance';
-                })->amount ?? 0;
-            $att_count = $emp->attendances->where('status', 'present')->count();
-            $salary = (($basic_salary / 30) * $att_count) + $housing_allowance + $transport_allowance;
 
-            DB::transaction(function () use ($payroll_batch, $salary, $basic_salary, $emp, $transport_allowance, $housing_allowance) {
+        $exists = PayrollBatch::where('month', $month)
+            ->where('year', $year)
+            ->exists();
+
+        if ($exists) {
+            throw new Exception('Payroll for this month has already been generated.');
+        }
+
+        $employees = Employee::with(
+            [
+                'salaryStructure.salaryStructureItems.salaryComponent',
+                'attendances' => function ($qu) use ($month, $year) {
+                    $qu->whereMonth('attendance_date', $month)->whereYear('attendance_date', $year);
+                },
+                'currentShift'
+            ]
+        )->get();
+
+        DB::transaction(function () use ($month, $year, $employees) {
+
+            $payroll_batch = PayrollBatch::create([
+                'month' => $month,
+                'year' => $year,
+                'generated_by' => auth()->id(),
+                'status' => 'generated'
+            ]);
+            foreach ($employees as $emp) {
+                $calculate = $this->payroll_calculation->calculate($emp, $month, $year);
 
                 $payroll = Payroll::create([
                     'payroll_batch_id' => $payroll_batch->id,
                     'employee_id' => $emp->id,
-                    'basic_salary' => $basic_salary,
-                    'total_allowance' => $housing_allowance + $transport_allowance,
+                    'basic_salary' => $calculate['basic_salary'],
+                    'total_allowance' => $calculate['total_allowance'],
                     'total_bonus' => 0,
-                    'total_deduction' => 0,
-                    'tax' => 0,
-                    'net_salary' => round($salary, 2),
+                    'total_deduction' => round($calculate['total_deduction'],2),
+                    'tax' => round($calculate['tax'],2),
+                    'net_salary' => round($calculate['net_salary'], 2),
                     'status' => $payroll_batch->status,
                     'generated_at' => now()->toDateString()
                 ]);
-                PayrollItem::create([
-                    'payroll_id'  => $payroll->id,
-                    'item_type'   => 'basic',
-                    'description' => 'Basic Salary',
-                    'amount'      => round($payroll->basic_salary, 2),
-                ]);
-                PayrollItem::create([
-                    'payroll_id'  => $payroll->id,
-                    'item_type'   => 'allowance',
-                    'description' => 'Housing Allowance',
-                    'amount'      => $housing_allowance,
-                ]);
+                $this->payroll_calculation->addPayRollItems(
+                    $payroll,
+                    $calculate['housing_allowance'],
+                    $calculate['transport_allowance'],
+                    $calculate['tax'],
+                    $calculate['deduction_salary']
+                );
+            }
+        });
+    }
 
-                PayrollItem::create([
-                    'payroll_id'  => $payroll->id,
-                    'item_type'   => 'allowance',
-                    'description' => 'Transport Allowance',
-                    'amount'      => $transport_allowance,
-                ]);
-            });
+    public function payroll_approved($id)
+    {
+        $payroll_batch = PayrollBatch::findOrFail($id);
+        if ($payroll_batch->status != 'generated') {
+            throw new Exception('Only generat payroll cna approve');
         }
+        DB::transaction(function () use ($payroll_batch) {
+            $payroll_batch->update(['status' => 'approved']);
+            $payroll_batch->payrolls()->update(['status' => 'approved']);
+        });
+    }
+
+    public function payroll_paid($id)
+    {
+        $payroll_batch = PayrollBatch::findOrFail($id);
+        if ($payroll_batch->status != 'approved') {
+            throw new Exception('Only approved payroll cna approve');
+        }
+        DB::transaction(function () use ($payroll_batch) {
+            $payroll_batch->update(['status' => 'paid']);
+            $payroll_batch->payrolls()->update(['status' => 'paid']);
+        });
+    }
+
+    public function employeeView($id)
+    {
+        return Employee::with(['payrolls.payrollBatch', 'department', 'position', 'salaryStructure.salaryStructureItems' => function ($q) {
+            $q->whereHas('salaryComponent', function ($q) {
+                $q->where('name', 'Basic Salary');
+            });
+        }])->findOrFail($id);
+    }
+
+    public function payslipView($id)
+    {
+        return Payroll::with('employee.department', 'employee.position', 'payrollBatch', 'items')->findOrFail($id);
     }
 }

@@ -12,6 +12,7 @@ defineOptions({
 const form = useForm({
     name: "",
     type: "",
+    category:"",
     description: "",
     structure_name: "",
     structure_description: "",
@@ -26,7 +27,6 @@ const item_form = useForm({
     percentage: "",
     effective_date: "",
 });
-function show_selected_item() {}
 
 function add_items() {
     const item = item_form.data();
@@ -47,32 +47,27 @@ function add_items() {
         item.amount = null;
     }
 
-    select_items.value.push(item);
-    form.selected_items.push(item);
+    select_items.value = [item];
+    form.selected_items = [item];
 }
 
 function create_salary_component() {
-    form.post(route("payroll.store"),{
-        onSuccess:(success)=>{
-            form.reset()
-        }
+    form.post(route("salarycomponent.store"), {
+        onSuccess: (success) => {
+            form.reset();
+        },
     });
 }
 
 function remove_selected_item(item) {
-    select_items.value = select_items.value.filter(
-        (selected) => selected !== item,
-    );
-
-    form.selected_items = form.selected_items.filter(
-        (selected) => selected !== item,
-    );
+    select_items.value = [];
+    form.selected_items = [];
 }
 </script>
 
 <template>
     <div class="mx-auto max-w-5xl">
-         <div
+        <div
             v-if="Object.keys(form.errors).length"
             class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4"
         >
@@ -99,7 +94,7 @@ function remove_selected_item(item) {
             <div class="flex gap-2">
                 <Link
                     type="button"
-                    :href="route('payroll.index')"
+                    :href="route('salarycomponent.index')"
                     class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                     Cancel
@@ -268,15 +263,14 @@ function remove_selected_item(item) {
 
                     <!-- Selected Items -->
                     <div
-                        v-for="si in select_items"
-                        :key="si.id"
+                        v-show="select_items?.length > 0"
                         class="grid grid-cols-4 items-center gap-4 border-b border-gray-200 px-4 py-3"
                     >
                         <!-- Calculation Type -->
                         <div
                             class="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                         >
-                            {{ si.calculation_type }}
+                            {{ select_items[0]?.calculation_type }}
                         </div>
 
                         <!-- Amount / Percentage -->
@@ -284,9 +278,9 @@ function remove_selected_item(item) {
                             class="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                         >
                             {{
-                                si.calculation_type === "fixed"
-                                    ? si.amount
-                                    : si.percentage + "%"
+                                select_items[0]?.calculation_type === "fixed"
+                                    ? select_items[0]?.amount
+                                    : select_items[0]?.percentage + "%"
                             }}
                         </div>
 
@@ -294,12 +288,12 @@ function remove_selected_item(item) {
                         <div
                             class="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                         >
-                            {{ si.effective_date }}
+                            {{ select_items[0]?.effective_date }}
                         </div>
 
                         <!-- Delete -->
                         <button
-                            @click="remove_selected_item(si)"
+                            @click="remove_selected_item(select_items)"
                             type="button"
                             class="w-fit rounded-lg border border-red-200 px-3 py-2 text-sm text-red-500 hover:bg-red-50"
                         >

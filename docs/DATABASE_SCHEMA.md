@@ -111,7 +111,7 @@
 
 ---
  -->
-### holidays
+<!-- ### holidays
 
 - id
 - name
@@ -120,7 +120,7 @@
 - description
 - timestamps
 
----
+--- -->
 
 # Authentication
 

@@ -233,7 +233,7 @@ function filter_emloyee() {
             </thead>
             <tbody v-if="filter_emloyee()?.length">
                 <tr
-                    v-for="lq in filter_emloyee()"
+                    v-for="lq in filter_emloyee()" :key="lq.id"
                     class="border-b border-gray-100 hover:bg-gray-50"
                 >
                     <td class="px-5 py-3">

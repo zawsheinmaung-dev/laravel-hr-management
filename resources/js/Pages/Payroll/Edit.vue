@@ -23,7 +23,7 @@ const form = useForm({
 });
 
 function update_salary_component() {
-    form.put(route('payroll.update',props.salary.id))
+    form.put(route('salarycomponent.update',props.salary.id))
 }
 
 const item_form = useForm({
@@ -53,20 +53,30 @@ function add_items() {
         item.amount = null;
     }
 
-    form.selected_items.push(item);
+    form.selected_items=[item];
 }
 
 function remove_selected_item(item) {
 
-    form.selected_items = form.selected_items.filter(
-        (selected) => selected !== item,
-    );
+    form.selected_items =[]
 }
 </script>
 
 <template>
     <div class="max-w-5xl mx-auto">
         <!-- Card -->
+         <div
+            v-if="Object.keys(form.errors).length"
+            class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4"
+        >
+            <div
+                v-for="(er, key) in form.errors"
+                :key="key"
+                class="text-sm text-red-600"
+            >
+                {{ er }}
+            </div>
+        </div>
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
             <!-- Header -->
             <div
@@ -86,7 +96,7 @@ function remove_selected_item(item) {
                 <!-- Right -->
                 <div class="flex items-center gap-3">
                     <Link
-                        :href="route('payroll.index')"
+                        :href="route('salarycomponent.index')"
                         class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100"
                     >
                         Back
@@ -219,6 +229,7 @@ function remove_selected_item(item) {
                         >
                             <option value="fixed">Fixed</option>
                             <option value="percentage">Percentage</option>
+                            <option value="parday">Par Day</option>
                         </select>
 
                         <!-- Amount / Percentage -->

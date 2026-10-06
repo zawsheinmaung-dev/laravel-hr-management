@@ -38,7 +38,7 @@ function delete_salary_component(id)
             </div>
 
             <Link
-            :href="route('payroll.create')"
+            :href="route('salarycomponent.create')"
                 class="inline-flex items-center px-4 py-2
                        bg-gray-800 text-white text-sm font-medium
                        rounded-lg hover:bg-gray-700 transition"

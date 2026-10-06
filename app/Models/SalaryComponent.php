@@ -30,4 +30,15 @@ class SalaryComponent extends Model
             'salary_structure_id'
         )->distinct();
     }
+
+    public function allowances()
+    {
+        return $this->hasMany(Allowance::class);
+    }
+
+    public function deductions()
+    {
+        return $this->hasMany(Deduction::class);
+    }
+
 }

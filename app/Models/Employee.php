@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Concerns\SearchTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
@@ -99,6 +100,16 @@ class Employee extends Model
     public function payrolls()
     {
         return $this->hasMany(Payroll::class);
+    }
+
+    public function allowances()
+    {
+        return $this->hasMany(Allowance::class);
+    }
+
+    public function deduction()
+    {
+        return $this->HasMany(Deduction::class);
     }
 
     public function update_user_name()

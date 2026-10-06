@@ -17,8 +17,18 @@ class Shifts extends Model
         'break_minutes'
     ];
 
+    public function employees()
+    {
+        return $this->hasMany(Employee::class,'employee_id');
+    }
+
     public function assignments()
     {
         return $this->hasMany(ShiftAssignments::class,'shift_id');
+    }
+
+    public function workingDays()
+    {
+        return $this->hasMany(WorkingDay::class,'shift_id');
     }
 }

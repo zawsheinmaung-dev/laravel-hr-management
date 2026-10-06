@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShiftAndWorkingDayReequest;
 use App\Http\Requests\ShiftAssignRequest;
 use App\Models\Shifts;
 use App\Services\ShiftService;
@@ -28,15 +29,19 @@ class ShiftController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Shift/Create');
+        return Inertia::render('Shift/Create',['workingdays'=>config('workingdays.days')]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ShiftAndWorkingDayReequest $request)
     {
-        Shifts::create($request->all());
+        $vali_data =$request->validated([]);
+        $working_days=$vali_data['working_days'];
+        unset($vali_data['working_days']);
+        $this->shift_service->store_shift_working_days($vali_data,$working_days);
+        return redirect()->back();
     }
 
     /**

@@ -31,4 +31,9 @@ class Payroll extends Model
     {
         return $this->belongsTo(PayrollBatch::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(PayrollItem::class);
+    }
 }

@@ -54,8 +54,8 @@
 
 # 2. Authentication
 
-* [ ] Login page
-* [ ] Logout
+* [x] Login page
+* [x] Logout
 * [ ] Forgot password
 * [ ] Reset password
 * [ ] Remember me
@@ -111,20 +111,20 @@
 
 # 7. Leave Management
 
-* [ ] Leave type CRUD
-* [ ] Leave request form
-* [ ] Approve/reject leave
-* [ ] Leave balance calculation
+* [x] Leave type CRUD
+* [x] Leave request form
+* [x] Approve/reject leave
+* [x] Leave balance calculation
 
 ---
 
 # 8. Payroll System
 
-* [ ] Salary structure
-* [ ] Allowance management
-* [ ] Deduction management
-* [ ] Generate payroll
-* [ ] Payroll history
+* [x] Salary structure
+* [x] Allowance management
+* [x] Deduction management
+* [x] Generate payroll
+* [x] Payroll history
 
 ---
 
