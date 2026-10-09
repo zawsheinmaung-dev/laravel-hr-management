@@ -36,7 +36,7 @@ class AttendanceFactory extends Factory
                 ->value('id'),
 
             'attendance_date' => fake()
-                ->dateTimeBetween('2026-10-01', '2026-10-31')
+                ->dateTimeBetween('2026-09-01', '2026-09-30')
                 ->format('Y-m-d'),
 
             'check_in' => fn (array $attrs) => Carbon::parse($attrs['attendance_date'])

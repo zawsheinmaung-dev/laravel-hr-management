@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Employee;
 use App\Models\Overtime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,8 +18,10 @@ class OvertimeFactory extends Factory
      */
     public function definition(): array
     {
+        
+
         return [
-            //
+            
         ];
     }
 }

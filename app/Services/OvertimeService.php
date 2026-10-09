@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Attendance;
 use App\Models\Overtime;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class OvertimeService
@@ -57,7 +58,7 @@ class OvertimeService
             ]);
             if ($status === 'approved') {
                 $ot->attendance->update([
-                    'overtime_minutes' => $ot->from_time->diffInMinutes($ot->to_time)
+                    'overtime_minutes' => Carbon::parse($ot->from_time)->diffInMinutes(Carbon::parse($ot->to_time))
                 ]);
             }
         });

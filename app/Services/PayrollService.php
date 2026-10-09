@@ -50,7 +50,10 @@ class PayrollService
                 'attendances' => function ($qu) use ($month, $year) {
                     $qu->whereMonth('attendance_date', $month)->whereYear('attendance_date', $year);
                 },
-                'currentShift'
+                'currentShift',
+                'overtimes'=>function ($qu) use($month,$year){
+                    $qu->whereMonth('date', $month)->whereYear('date', $year);
+                }
             ]
         )->get();
 
@@ -63,6 +66,7 @@ class PayrollService
                 'status' => 'generated'
             ]);
             foreach ($employees as $emp) {
+                // $this->payroll_calculation->calculate($emp, $month, $year);
                 $calculate = $this->payroll_calculation->calculate($emp, $month, $year);
 
                 $payroll = Payroll::create([
@@ -82,7 +86,10 @@ class PayrollService
                     $calculate['housing_allowance'],
                     $calculate['transport_allowance'],
                     $calculate['tax'],
-                    $calculate['deduction_salary']
+                    $calculate['deduction_salary'],
+                    $calculate['late_minutes'],
+                    $calculate['early_out_minutes'],
+                    $calculate['over_time']
                 );
             }
         });

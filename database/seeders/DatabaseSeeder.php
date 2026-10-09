@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Employees;
 use App\Models\Leavetype;
+use App\Models\Overtime;
 use App\Models\Position;
 use App\Models\SalaryComponent;
 use App\Models\SalaryStructure;
@@ -247,8 +248,8 @@ class DatabaseSeeder extends Seeder
             'rate_percentage' => 10,
             'effective_year' => 2026,
         ]);
-        $start = Carbon::create(2026, 10, 1);
-        $end = Carbon::create(2026, 10, 31);
+        $start = Carbon::create(2026, 9, 1);
+        $end = Carbon::create(2026, 9, 30);
 
         foreach ($employees as $emp) {
 
@@ -266,6 +267,27 @@ class DatabaseSeeder extends Seeder
 
                 $date->addDay();
             }
+
+            for ($day = 3; $day <= 30; $day += 3) {
+        $date = Carbon::create(2026, 9, $day)->toDateString();
+
+        $attendance = $emp->attendances
+            ->firstWhere('attendance_date', $date);
+
+        if (!$attendance || $attendance->status !== 'present') {
+            continue;
+        }
+
+        Overtime::factory()->create([
+            'employee_id'   => $emp->id,
+            'attendance_id' => $attendance->id,
+            'date' => $date,
+            'from_time'     => '18:00:00',
+            'to_time'       => '20:00:00',
+            'reason'        => fake()->sentence(),
+            'status'        => 'pending',
+        ]);
+    }
         }
     }
 }
